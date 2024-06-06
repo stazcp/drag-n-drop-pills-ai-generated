@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Provider, defaultTheme } from "@adobe/react-spectrum";
 import { Pill } from "./Pill";
 import { DropZone } from "./DropZone";
@@ -28,6 +28,14 @@ function App() {
     [key: string]: CombinedPool;
   }>({});
 
+  const [dropHandled, setDropHandled] = useState(false);
+
+  useEffect(() => {
+    if (dropHandled) {
+      setDropHandled(false);
+    }
+  }, [dropHandled]);
+
   const handleDrop = (items: Pill[]) => {
     const newPills = items.map((item) => ({ id: item.id, label: item.label }));
     setPills((prevPills) => {
@@ -45,7 +53,7 @@ function App() {
       newCombinedPools[poolId].datasets = newCombinedPools[
         poolId
       ].datasets.filter(
-        (pill) => !newPills.find((newPill) => newPill.id === pill.id)
+        (pill) => !newPills.find((newPill) => newPill.id === pill.id),
       );
     });
     setCombinedPools(newCombinedPools);
@@ -70,8 +78,8 @@ function App() {
 
     setPills((prevPills) =>
       prevPills.filter(
-        (pill) => !newPills.find((newPill) => newPill.id === pill.id)
-      )
+        (pill) => !newPills.find((newPill) => newPill.id === pill.id),
+      ),
     );
   };
 
@@ -86,16 +94,20 @@ function App() {
       }));
 
       setPills((prevPills) =>
-        prevPills.filter((pill) => pill.id !== targetId && pill.id !== sourceId)
+        prevPills.filter(
+          (pill) => pill.id !== targetId && pill.id !== sourceId,
+        ),
       );
     }
   };
 
   const handleDragOut = (id: string, poolId: string) => {
+    if (dropHandled) return;
+
     setPills((prevPills) => {
       const updatedPills = [...prevPills];
       const draggedPill = combinedPools[poolId]?.datasets.find(
-        (pill) => pill.id === id
+        (pill) => pill.id === id,
       );
       if (draggedPill && !updatedPills.some((pill) => pill.id === id)) {
         updatedPills.push(draggedPill);
@@ -107,7 +119,7 @@ function App() {
       const updatedPools = { ...prevPools };
       if (updatedPools[poolId]) {
         updatedPools[poolId].datasets = updatedPools[poolId].datasets.filter(
-          (pill) => pill.id !== id
+          (pill) => pill.id !== id,
         );
         if (updatedPools[poolId].datasets.length === 0) {
           delete updatedPools[poolId];
@@ -117,26 +129,31 @@ function App() {
     });
   };
 
+  const shouldShowDropZone = pills.length > 0;
+
   return (
     <Provider theme={defaultTheme}>
       <div style={{ padding: "16px" }}>
         <h1>Pool Selector</h1>
-        <DropZone onDrop={handleDrop}>
-          {pills.map((pill) => (
-            <Pill
-              key={pill.id}
-              id={pill.id}
-              label={pill.label}
-              onCombine={handleCombine}
-            />
-          ))}
-        </DropZone>
+        {shouldShowDropZone && (
+          <DropZone onDrop={handleDrop}>
+            {pills.map((pill) => (
+              <Pill
+                key={pill.id}
+                id={pill.id}
+                label={pill.label}
+                onCombine={handleCombine}
+              />
+            ))}
+          </DropZone>
+        )}
         {Object.keys(combinedPools).map((poolId) => (
           <CombinedPool
             key={poolId}
             poolId={poolId}
             onDragOut={(id) => handleDragOut(id, poolId)}
             onDrop={(items) => handleDropIntoCombined(items, poolId)}
+            setDropHandled={setDropHandled}
           >
             {combinedPools[poolId].datasets.map((pill) => (
               <Pill

@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useDrag, useDrop } from "@react-aria/dnd";
 
-export function Pill({ id, label, onCombine, onDragOut, dragDisabled }) {
+export function Pill({ id, label, onCombine, onDragOut }) {
   const [isHovered, setIsHovered] = useState(false);
   const ref = useRef();
 
@@ -14,7 +14,6 @@ export function Pill({ id, label, onCombine, onDragOut, dragDisabled }) {
         onDragOut(id);
       }
     },
-    isDisabled: dragDisabled,
   });
 
   const { dropProps } = useDrop({
@@ -40,7 +39,7 @@ export function Pill({ id, label, onCombine, onDragOut, dragDisabled }) {
 
   return (
     <div
-      {...(dragDisabled ? {} : dragProps)}
+      {...dragProps}
       {...dropProps}
       ref={ref}
       style={{
@@ -49,7 +48,7 @@ export function Pill({ id, label, onCombine, onDragOut, dragDisabled }) {
         borderRadius: "4px",
         margin: "4px",
         display: "inline-block",
-        cursor: dragDisabled ? "default" : "grab",
+        cursor: "grab",
       }}
     >
       {label}

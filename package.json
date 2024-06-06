@@ -9,16 +9,17 @@
   ],
   "main": "src/index.tsx",
   "dependencies": {
+    "@adobe/react-spectrum": "3.35.1",
+    "@react-aria/dnd": "3.6.1",
+    "@react-spectrum/button": "3.16.4",
+    "@react-spectrum/provider": "3.9.7",
+    "@react-spectrum/theme-default": "3.5.10",
+    "@react-stately/dnd": "3.3.1",
+    "@types/uuid": "^9.0.8",
     "loader-utils": "3.2.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-scripts": "5.0.1",
-    "@react-spectrum/provider": "3.9.7",
-    "@react-spectrum/theme-default": "3.5.10",
-    "@react-spectrum/button": "3.16.4",
-    "@react-aria/dnd": "3.6.1",
-    "@react-stately/dnd": "3.3.1",
-    "@adobe/react-spectrum": "3.35.1",
     "uuid": "9.0.1"
   },
   "devDependencies": {

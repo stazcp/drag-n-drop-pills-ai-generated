@@ -13,7 +13,7 @@ export function DropZone({ onDrop, children }) {
           const data = await item.getText("text/plain");
           const { id, label } = JSON.parse(data);
           return { id, label };
-        })
+        }),
       );
       onDrop(items);
     },
